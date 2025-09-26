@@ -3,14 +3,14 @@ import { Navbar } from '@/components/Navbar';
 import NFTContent from '@/components/NFTContent';
 
 export default async function Home() {
-  const response = await fetch(
+   const response = await fetch(
     'https://mint-api-production-7d50.up.railway.app/nfts',
-    { next: { revalidate: 60 } }
+    { cache: 'no-store' }
   );
   const nfts = await response.json();
 
   return (
-    <div className='font-sans min-h-screen bg-white flex flex-col justify-between'>
+    <div className='min-h-screen bg-white flex flex-col justify-between'>
       <Navbar />
       <main className='py-20 px-4 max-w-[1440px] mx-auto'>
         <NFTContent nfts={nfts} />
