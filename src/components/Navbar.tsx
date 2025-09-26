@@ -1,6 +1,7 @@
 
 'use client';
-import KilnLogo from '@/../public/icons/kiln-logo.svg';
+
+import { KilnLogo } from "@/components/icons";
 
 export function Navbar() {
   return (
