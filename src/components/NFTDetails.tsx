@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { NFT } from '@/types/nft';
-import { convertIpfsUrl } from '@/lib/ipfs';
 import Link from 'next/link';
 import {
   KilnLogo,
@@ -23,7 +22,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
         <div className='flex flex-col gap-6'>
           <div className='aspect-square relative overflow-hidden'>
             <Image
-              src={convertIpfsUrl(nft.metadata.image)}
+              src={nft.metadata.image}
               alt={nft.metadata.name}
               fill
               className='w-[608px] h-[608px] object-cover'

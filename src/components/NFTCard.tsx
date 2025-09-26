@@ -1,6 +1,5 @@
 
 import { NFT } from '@/types/nft';
-import { convertIpfsUrl } from '@/lib/ipfs';
 import Image from 'next/image';
 
 interface NFTCardProps {
@@ -13,7 +12,7 @@ export function NFTCard({ nft }: NFTCardProps) {
     <div className='w-[280px] bg-white flex flex-col gap-2'>
       <div className='aspect-square relative'>
         <Image
-          src={convertIpfsUrl(nft.metadata.image)}
+          src={nft.metadata.image}
           alt={nft.metadata.name}
           fill
           className='object-cover'
