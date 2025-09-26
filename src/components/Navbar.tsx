@@ -22,11 +22,14 @@ export function Navbar() {
         >
           {isConnected ? 'Wallet' : 'Connect Wallet'}
         </button>
-        {showWallet && (
-          <div className="absolute top-full right-0 mt-2 bg-white border border-gray-light shadow-lg p-4 min-w-[200px] z-50">
-            <WalletConnect />
-          </div>
-        )}
+
+        <div className={`absolute top-full right-0 mt-2 bg-white border border-gray-light shadow-lg p-4 min-w-[200px] z-50 transition-all duration-200 ease-out ${
+          showWallet
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 translate-y-[-8px] pointer-events-none'
+        }`}>
+          <WalletConnect />
+        </div>
       </div>
     </nav>
   );
