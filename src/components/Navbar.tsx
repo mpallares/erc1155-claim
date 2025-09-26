@@ -1,3 +1,5 @@
+
+'use client';
 import KilnLogo from '@/../public/icons/kiln-logo.svg';
 
 export function Navbar() {
