@@ -193,7 +193,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
 
           {/* Price Section */}
           <div className='lg:absolute lg:top-[274px] pt-0.5 flex flex-col gap-2'>
-            <span className='bg-secondary text-gray-50 text-xs px-2 py-1 w-fit'>
+            <span className='bg-dark text-gray-50 text-xs px-2 py-1 w-fit'>
               {price && Number(price) > 0 ? 'Paid Mint' : 'Free Mint'}
             </span>
             <div className='text-2xl leading-6 font-semibold text-dark flex items-center gap-2'>
