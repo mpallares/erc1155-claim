@@ -5,7 +5,7 @@ import React from 'react';
 import { useAccount } from 'wagmi';
 import { useNFTClaim } from '@/hooks/useNFTClaim';
 import { useNFTStatus } from '@/hooks/useNFTStatus';
-import { getErrorSeverityColor } from '@/lib/errorUtils';
+import { getErrorSeverityColor } from '@/lib/utils/errorUtils';
 import { baseSepolia } from 'wagmi/chains';
 import { formatEther } from 'viem';
 
