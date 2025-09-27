@@ -1,6 +1,6 @@
 import { useWriteContract } from 'wagmi';
 import { ERC1155_ABI } from '@/abis/erc1155';
-import { parseWeb3Error } from '@/lib/errorUtils';
+import { parseWeb3Error } from '@/lib/utils/errorUtils';
 
 interface AllowlistProof {
   proof: `0x${string}`[];

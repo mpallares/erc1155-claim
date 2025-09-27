@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     loader: 'custom',
-    loaderFile: './src/lib/imageLoader.ts',
+    loaderFile: './src/lib/utils/imageLoader.ts',
   },
   webpack(config) {
     config.module.rules.push({
