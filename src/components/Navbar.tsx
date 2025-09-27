@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState} from "react";
 import { KilnLogo } from "@/components/icons";
 import { WalletConnect } from "@/components/WalletConnect";
 import { useAccount } from "wagmi";
@@ -23,13 +23,17 @@ export function Navbar() {
           {isConnected ? 'Wallet' : 'Connect Wallet'}
         </button>
 
-        <div className={`absolute top-full right-0 mt-2 bg-white border border-gray-light shadow-lg p-4 min-w-[200px] z-50 transition-all duration-200 ease-out ${
-          showWallet
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 translate-y-[-8px] pointer-events-none'
-        }`}>
-          <WalletConnect />
-        </div>
+        {showWallet && (
+          <>
+            <div
+              className="fixed inset-0 z-40"
+              onClick={() => setShowWallet(false)}
+            />
+            <div className="absolute top-full right-0 mt-2 bg-white border border-gray-light shadow-lg p-4 min-w-[200px] z-50">
+              <WalletConnect />
+            </div>
+          </>
+        )}
       </div>
     </nav>
   );
