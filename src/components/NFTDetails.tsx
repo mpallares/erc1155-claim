@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { NFT } from '@/types/nft';
 import Link from 'next/link';
-import { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { useAccount } from 'wagmi';
 import { useNFTClaim } from '@/hooks/useNFTClaim';
 import {
@@ -24,36 +24,14 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
   const { claimNFT, hash, error, isPending, isConfirming, isConfirmed, isTransactionError } =
     useNFTClaim();
 
-  const [claimStatus, setClaimStatus] = useState<string | null>(isConnected ? 'Claim Now' : 'Connect Wallet');
-
-  const getClaimButtonText = useCallback(() => {
-    if (!isConnected) {
-      setClaimStatus('Connect Wallet');
-      return;
-    }
-    if (isPending) {
-      setClaimStatus('Confirming...');
-      return;
-    }
-    if (isConfirming) {
-      setClaimStatus('Claiming...');
-      return;
-    }
-    if (isTransactionError) {
-      setClaimStatus('Claim failed');
-      return;
-    }
-    if (isConfirmed) {
-      setClaimStatus('Claimed!');
-      return;
-    }
-    setClaimStatus('Claim Now');
-  }, [isConnected,  isPending, isConfirming, isConfirmed, isTransactionError]);
-
-  // Update button text when state changes
-  useEffect(() => {
-    getClaimButtonText();
-  }, [isConnected, isPending, isConfirming, isConfirmed, isTransactionError, getClaimButtonText]);
+  const getClaimButtonText = () => {
+    if (!isConnected) return 'Connect Wallet';
+    if (isPending) return 'Confirming...';
+    if (isConfirming) return 'Claiming...';
+    if (isTransactionError) return 'Claim failed';
+    if (isConfirmed) return 'Claimed!';
+    return 'Claim Now';
+  };
 
   const handleClaim = async () => {
     if (!address || !isConnected) return;
@@ -62,7 +40,6 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
       await claimNFT(nft.tokenAddress as `0x${string}`, nft.id);
     } catch (err) {
       console.error('Claim failed:', err);
-      setClaimStatus('Claim failed');
     }
   };
 
@@ -133,7 +110,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
                 Website
               </Link>
             <Link href='https://www.kiln.fi/' target='_blank' rel='noopener noreferrer' className='w-fit'>
-              <div className='border border-gray-light h-9 w-9 shadow-button font-medium text-dark hover:bg-gray-100 transition-colors cursor-pointer flex items-center justify-center p-1'>
+              <div className='border border-gray-light h-9 w-9 shadow-button font-medium bg-white text-dark hover:bg-gray-900 transition-colors cursor-pointer flex items-center justify-center p-1'>
                 <ArrowRightUpIcon height={16} width={16} />
               </div>
             </Link></div>
@@ -207,7 +184,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
             disabled={!isConnected || isPending || isConfirming || isConfirmed || isTransactionError}
             className={`w-full lg:absolute lg:top-[362px] shadow-button py-4 px-6 font-medium text-md transition-colors ${
               isConfirmed
-                ? 'bg-green-600 text-white cursor-default'
+                ? 'bg-green-600 text-gray-50 cursor-default'
                 : isTransactionError
                 ? 'bg-red-600 text-white cursor-default'
                 : !isConnected || isPending || isConfirming
@@ -215,12 +192,12 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
                 : 'bg-dark-gray text-gray-50 hover:bg-dark-gray/90 cursor-pointer'
             }`}
           >
-            {claimStatus}
+            {getClaimButtonText()}
           </button>
 
           {/* Transaction Hash */}
           {hash && (
-            <div className='lg:absolute lg:top-[420px] text-xs text-gray-500'>
+            <div className='lg:absolute lg:top-[420px] text-gray-500'>
               <Link
                 href={`https://sepolia.basescan.org/tx/${hash}`}
                 target='_blank'
