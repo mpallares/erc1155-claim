@@ -1,40 +1,76 @@
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useWriteContract } from 'wagmi';
 import { ERC1155_ABI } from '@/abis/erc1155';
+import { parseWeb3Error } from '@/lib/errorUtils';
+
+interface AllowlistProof {
+  proof: `0x${string}`[];
+  quantityLimitPerWallet: bigint;
+  pricePerToken: bigint;
+  currency: `0x${string}`;
+}
+
+interface ClaimParams {
+  contractAddress: `0x${string}`;
+  tokenId: bigint;
+  receiver: `0x${string}`;
+  quantity: bigint;
+  currency: `0x${string}`;
+  pricePerToken?: bigint;
+  allowlistProof?: AllowlistProof;
+  data?: `0x${string}`;
+}
 
 export function useNFTClaim() {
-  const { writeContract, data: hash, error, isPending } = useWriteContract();
-
   const {
-    isLoading: isConfirming,
+    writeContract,
+    data: hash,
+    error: transactionError,
+    isPending: isConfirming,
     isSuccess: isConfirmed,
-    isError: isTransactionError,
-    error: transactionError
-  } = useWaitForTransactionReceipt({
-    hash,
-  });
+  } = useWriteContract();
 
-  const claimNFT = async (address: `0x${string}`, tokenId: string) => {
-    try {
-      await writeContract({
-        address: address,
-        abi: ERC1155_ABI,
-        functionName: 'claim',
-        args: [BigInt(tokenId)],
-      });
-    } catch (err) {
-      console.error('Error claiming NFT:', err);
-      throw err;
-    }
+  const claimNFT = ({
+    contractAddress,
+    tokenId,
+    receiver,
+    quantity,
+    currency,
+    pricePerToken = BigInt(0),
+  }: ClaimParams) => {
+    writeContract({
+      address: contractAddress,
+      abi: ERC1155_ABI,
+      functionName: 'claim',
+      args: [
+        receiver,
+        tokenId,
+        quantity,
+        currency,
+        pricePerToken,
+        {
+          proof: [],
+          quantityLimitPerWallet: BigInt(0),
+          pricePerToken: BigInt(0),
+          currency: '0x0000000000000000000000000000000000000000',
+        },
+        '0x',
+      ],
+      value: pricePerToken * quantity,
+    });
   };
+
+  console.log('transactionError', transactionError);
+
+  const parsedError = transactionError
+    ? parseWeb3Error(transactionError)
+    : null;
 
   return {
     claimNFT,
     hash,
-    error,
-    isPending,
+    transactionError,
+    parsedError,
     isConfirming,
     isConfirmed,
-    isTransactionError,
-    transactionError,
   };
 }
