@@ -135,7 +135,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
                 rel='noopener noreferrer'
                 className='w-fit'
               >
-                <div className='border border-gray-light h-9 w-9 shadow-button font-medium bg-white text-dark hover:bg-gray-900 transition-colors cursor-pointer flex items-center justify-center p-1'>
+                <div className='border border-gray-light h-9 w-9 shadow-button font-medium bg-white text-dark transition-colors cursor-pointer flex items-center justify-center p-1'>
                   <ArrowRightUpIcon height={16} width={16} />
                 </div>
               </Link>
