@@ -11,6 +11,8 @@ import {
   ShareIcon,
   HeartIcon,
   TickIcon,
+  MenuIcon,
+  ArrowRightUpIcon,
 } from './icons';
 
 interface NFTDetailsProps {
@@ -66,8 +68,8 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
 
 
   return (
-    <div className='w-full max-w-[1440px] mx-auto px-4 py-12'>
-      <div className='grid grid-cols-2 gap-16'>
+    <div className='w-full max-w-[1440px] mx-auto py-6 md:py-12'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16'>
         {/* Left side - NFT Image */}
         <div className='flex flex-col gap-6'>
           <div className='aspect-square relative overflow-hidden'>
@@ -123,18 +125,24 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
                 <span>@Kiln</span>
               </Link>
             </div>
-            <div></div>
-            <Link
-              href='https://www.kiln.fi/'
-              className='w-full bg-black text-white text-center py-3 px-6 font-medium hover:bg-gray-800 transition-colors'
-            >
-              Website
-            </Link>
+            <div className='flex gap-2'>
+              <Link
+                href='https://www.kiln.fi/'
+                className='w-full bg-dark-gray text-white text-center py-3 px-6 h-9 font-medium hover:bg-gray-800 transition-colors flex items-center justify-center'
+              >
+                Website
+              </Link>
+            <Link href='https://www.kiln.fi/' target='_blank' rel='noopener noreferrer' className='w-fit'>
+              <div className='border border-gray-light h-9 w-9 shadow-button font-medium text-dark hover:bg-gray-100 transition-colors cursor-pointer flex items-center justify-center p-1'>
+                <ArrowRightUpIcon height={16} width={16} />
+              </div>
+            </Link></div>
+       
           </div>
         </div>
 
         {/* Right side - NFT Details */}
-        <div className='relative h-full'>
+        <div className='flex flex-col gap-6 lg:relative lg:h-full'>
           <div className='flex items-center justify-between'>
             <div className='flex flex-col'>
               <h1 className='font-semibold leading-8 text-2xl text-dark'>
@@ -154,13 +162,13 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
             </div>
           </div>
 
-          <p className='text-gray-600 text-base leading-6 absolute top-[76px]'>
+          <p className='text-gray-600 text-base leading-6 lg:absolute lg:top-[76px]'>
             {nft.metadata.description}
           </p>
 
           {/* Attributes */}
           {nft.metadata.attributes && nft.metadata.attributes.length > 0 && (
-            <div className='absolute top-[148px]'>
+            <div className='lg:absolute lg:top-[148px]'>
               <div className='grid grid-cols-2 gap-3'>
                 {nft.metadata.attributes.map((attr, index) => (
                   <div
@@ -179,15 +187,17 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
             </div>
           )}
 
-          <span className='border border-gray-light absolute top-[249px] w-full'></span>
+          <span className='border border-gray-light lg:absolute lg:top-[249px] w-full'></span>
 
           {/* Price Section */}
-          <div className='absolute top-[274px] pt-0.5 flex flex-col gap-2'>
+          <div className='lg:absolute lg:top-[274px] pt-0.5 flex flex-col gap-2'>
             <span className='bg-secondary text-gray- text-xs px-2 py-1 w-fit'>
               Free Mint
             </span>
-            <div className='text-2xl leading-6 font-semibold text-dark'>
-              ≈ 0 ETH
+            <div className='text-2xl leading-6 font-semibold text-dark flex items-center gap-2'>
+              <MenuIcon width={24} height={24} />
+              <span>0</span>
+              <span>ETH</span>
             </div>
           </div>
 
@@ -195,14 +205,14 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
           <button
             onClick={handleClaim}
             disabled={!isConnected || isPending || isConfirming || isConfirmed || isTransactionError}
-            className={`w-full absolute top-[362px] shadow-button py-4 px-6 font-medium text-md transition-colors ${
+            className={`w-full lg:absolute lg:top-[362px] shadow-button py-4 px-6 font-medium text-md transition-colors ${
               isConfirmed
                 ? 'bg-green-600 text-white cursor-default'
                 : isTransactionError
                 ? 'bg-red-600 text-white cursor-default'
                 : !isConnected || isPending || isConfirming
                 ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                : 'bg-secondary text-gray-50 hover:bg-secondary/90 cursor-pointer'
+                : 'bg-dark-gray text-gray-50 hover:bg-dark-gray/90 cursor-pointer'
             }`}
           >
             {claimStatus}
@@ -210,7 +220,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
 
           {/* Transaction Hash */}
           {hash && (
-            <div className='absolute top-[420px] text-xs text-gray-500'>
+            <div className='lg:absolute lg:top-[420px] text-xs text-gray-500'>
               <Link
                 href={`https://sepolia.basescan.org/tx/${hash}`}
                 target='_blank'
@@ -224,7 +234,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
 
           {/* Error Message */}
           {error && (
-            <div className='absolute top-[420px] text-xs text-red-600 bg-red-50 p-2 rounded'>
+            <div className='lg:absolute lg:top-[420px] text-xs text-red-600 bg-red-50 p-2 rounded'>
               Error: {error.message}
             </div>
           )}

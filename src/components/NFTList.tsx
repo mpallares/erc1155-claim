@@ -13,7 +13,7 @@ export function NFTList({ nfts, onNFTClick }: NFTlistProps) {
         <h2 className='text-lg font-semibold text-dark leading-7'>
           More from this collection
         </h2>
-        <div className='grid grid-cols-4 gap-6'>
+        <div className='grid grid-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
           {nfts.map((nft) => (
             <div
               key={nft.id}

@@ -18,7 +18,7 @@ export function Navbar() {
       <div className="relative">
         <button
           onClick={() => setShowWallet(!showWallet)}
-          className="bg-secondary text-gray-50 px-4 py-2 hover:bg-secondary/85 transition-colors font-medium text-md leading-5 tracking-normal cursor-pointer shadow-button"
+          className="bg-dark-gray text-gray-50 px-4 py-2 hover:bg-secondary/85 transition-colors font-medium text-md leading-5 tracking-normal cursor-pointer shadow-button"
         >
           {isConnected ? 'Wallet' : 'Connect Wallet'}
         </button>
