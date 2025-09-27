@@ -6,7 +6,6 @@ interface CardProps {
   imageAlt: string;
   title: string;
   subtitle: string;
-  href?: string;
   onClick?: () => void;
   className?: string;
 }
@@ -16,12 +15,10 @@ export function Card({
   imageAlt,
   title,
   subtitle,
-  href,
   onClick,
   className = ''
 }: CardProps) {
   const baseClasses = 'w-[280px] bg-white flex flex-col gap-2';
-
   return (
     <div className={`${baseClasses} ${className}`} onClick={onClick}>
       <div className='aspect-square relative'>
@@ -29,6 +26,7 @@ export function Card({
           src={image}
           alt={imageAlt}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 280px"
           className='object-cover'
         />
       </div>
