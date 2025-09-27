@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import { NFT } from '@/types/nft';
 import Link from 'next/link';
+import { useState, useEffect, useCallback } from 'react';
+import { useAccount } from 'wagmi';
+import { useNFTClaim } from '@/hooks/useNFTClaim';
 import {
   KilnLogo,
   TwitterLogo,
@@ -15,6 +18,53 @@ interface NFTDetailsProps {
 }
 
 export function NFTDetails({ nft }: NFTDetailsProps) {
+  const { address, isConnected } = useAccount();
+  const { claimNFT, hash, error, isPending, isConfirming, isConfirmed, isTransactionError } =
+    useNFTClaim();
+
+  const [claimStatus, setClaimStatus] = useState<string | null>(isConnected ? 'Claim Now' : 'Connect Wallet');
+
+  const getClaimButtonText = useCallback(() => {
+    if (!isConnected) {
+      setClaimStatus('Connect Wallet');
+      return;
+    }
+    if (isPending) {
+      setClaimStatus('Confirming...');
+      return;
+    }
+    if (isConfirming) {
+      setClaimStatus('Claiming...');
+      return;
+    }
+    if (isTransactionError) {
+      setClaimStatus('Claim failed');
+      return;
+    }
+    if (isConfirmed) {
+      setClaimStatus('Claimed!');
+      return;
+    }
+    setClaimStatus('Claim Now');
+  }, [isConnected,  isPending, isConfirming, isConfirmed, isTransactionError]);
+
+  // Update button text when state changes
+  useEffect(() => {
+    getClaimButtonText();
+  }, [isConnected, isPending, isConfirming, isConfirmed, isTransactionError, getClaimButtonText]);
+
+  const handleClaim = async () => {
+    if (!address || !isConnected) return;
+
+    try {
+      await claimNFT(nft.tokenAddress as `0x${string}`, nft.id);
+    } catch (err) {
+      console.error('Claim failed:', err);
+      setClaimStatus('Claim failed');
+    }
+  };
+
+
   return (
     <div className='w-full max-w-[1440px] mx-auto px-4 py-12'>
       <div className='grid grid-cols-2 gap-16'>
@@ -96,7 +146,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
 
             <div className='flex gap-3'>
               <button className='w-8 h-8 flex items-center justify-center border border-gray-light shadow-button text-black hover:text-gray-700 transition-colors'>
-                <ShareIcon width={16} height={16}  />
+                <ShareIcon width={16} height={16} />
               </button>
               <button className='w-8 h-8 flex items-center justify-center border border-gray-light shadow-button text-black hover:text-gray-700 transition-colors'>
                 <HeartIcon width={16} height={16} />
@@ -142,9 +192,42 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
           </div>
 
           {/* Claim Button */}
-          <button className='w-full bg-secondary text-gray-50 absolute top-[362px] shadow-button py-4 px-6 font-medium text-md hover:bg-secondary/90 cursor-pointer transition-colors'>
-            Claim Now
+          <button
+            onClick={handleClaim}
+            disabled={!isConnected || isPending || isConfirming || isConfirmed || isTransactionError}
+            className={`w-full absolute top-[362px] shadow-button py-4 px-6 font-medium text-md transition-colors ${
+              isConfirmed
+                ? 'bg-green-600 text-white cursor-default'
+                : isTransactionError
+                ? 'bg-red-600 text-white cursor-default'
+                : !isConnected || isPending || isConfirming
+                ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                : 'bg-secondary text-gray-50 hover:bg-secondary/90 cursor-pointer'
+            }`}
+          >
+            {claimStatus}
           </button>
+
+          {/* Transaction Hash */}
+          {hash && (
+            <div className='absolute top-[420px] text-xs text-gray-500'>
+              <Link
+                href={`https://sepolia.basescan.org/tx/${hash}`}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:text-blue-600 underline'
+              >
+                View transaction
+              </Link>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {error && (
+            <div className='absolute top-[420px] text-xs text-red-600 bg-red-50 p-2 rounded'>
+              Error: {error.message}
+            </div>
+          )}
         </div>
       </div>
     </div>
