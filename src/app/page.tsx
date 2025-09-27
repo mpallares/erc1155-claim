@@ -12,7 +12,7 @@ export default async function Home() {
   return (
     <div className='min-h-screen bg-white flex flex-col justify-between'>
       <Navbar />
-      <main className='py-20 px-4 max-w-[1440px] mx-auto'>
+      <main className='py-20 px-4 max-w-[1280px] mx-auto'>
         <NFTContent nfts={nfts} />
       </main>
       <Footer />
