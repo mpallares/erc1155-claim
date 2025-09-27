@@ -4,6 +4,11 @@ import Link from 'next/link';
 import React from 'react';
 import { useAccount } from 'wagmi';
 import { useNFTClaim } from '@/hooks/useNFTClaim';
+import { useNFTStatus } from '@/hooks/useNFTStatus';
+import { getErrorSeverityColor } from '@/lib/errorUtils';
+import { baseSepolia } from 'wagmi/chains';
+import { formatEther } from 'viem';
+
 import {
   KilnLogo,
   TwitterLogo,
@@ -20,29 +25,43 @@ interface NFTDetailsProps {
 }
 
 export function NFTDetails({ nft }: NFTDetailsProps) {
-  const { address, isConnected } = useAccount();
-  const { claimNFT, hash, error, isPending, isConfirming, isConfirmed, isTransactionError } =
-    useNFTClaim();
-
+  const { address, isConnected, chain } = useAccount();
+  const {
+    claimNFT,
+    hash,
+    parsedError,
+    isConfirming,
+    isConfirmed,
+    transactionError,
+  } = useNFTClaim();
   const getClaimButtonText = () => {
     if (!isConnected) return 'Connect Wallet';
-    if (isPending) return 'Confirming...';
+    if (isConnected && chain?.id !== baseSepolia.id)
+      return 'Switch to Base Sepolia';
     if (isConfirming) return 'Claiming...';
-    if (isTransactionError) return 'Claim failed';
+    if (transactionError) return 'Transaction failed. Try Again';
     if (isConfirmed) return 'Claimed!';
     return 'Claim Now';
   };
 
-  const handleClaim = async () => {
+  const handleClaim = () => {
     if (!address || !isConnected) return;
 
-    try {
-      await claimNFT(nft.tokenAddress as `0x${string}`, nft.id);
-    } catch (err) {
-      console.error('Claim failed:', err);
-    }
+    claimNFT({
+      contractAddress: nft.tokenAddress as `0x${string}`,
+      tokenId: BigInt(nft.id),
+      receiver: address,
+      quantity: BigInt(1),
+      currency,
+      pricePerToken: price,
+    });
   };
 
+  // Get price info and claim conditions
+  const { price, currency } = useNFTStatus(
+    nft.tokenAddress as `0x${string}`,
+    nft.id
+  );
 
   return (
     <div className='w-full max-w-[1440px] mx-auto py-6 md:py-12'>
@@ -54,6 +73,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
               src={nft.metadata.image}
               alt={nft.metadata.name}
               fill
+              sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 608px'
               className='w-[608px] h-[608px] object-cover'
             />
           </div>
@@ -109,12 +129,17 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
               >
                 Website
               </Link>
-            <Link href='https://www.kiln.fi/' target='_blank' rel='noopener noreferrer' className='w-fit'>
-              <div className='border border-gray-light h-9 w-9 shadow-button font-medium bg-white text-dark hover:bg-gray-900 transition-colors cursor-pointer flex items-center justify-center p-1'>
-                <ArrowRightUpIcon height={16} width={16} />
-              </div>
-            </Link></div>
-       
+              <Link
+                href='https://www.kiln.fi/'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='w-fit'
+              >
+                <div className='border border-gray-light h-9 w-9 shadow-button font-medium bg-white text-dark hover:bg-gray-900 transition-colors cursor-pointer flex items-center justify-center p-1'>
+                  <ArrowRightUpIcon height={16} width={16} />
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -168,12 +193,12 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
 
           {/* Price Section */}
           <div className='lg:absolute lg:top-[274px] pt-0.5 flex flex-col gap-2'>
-            <span className='bg-secondary text-gray- text-xs px-2 py-1 w-fit'>
-              Free Mint
+            <span className='bg-secondary text-gray-50 text-xs px-2 py-1 w-fit'>
+              {price && Number(price) > 0 ? 'Paid Mint' : 'Free Mint'}
             </span>
             <div className='text-2xl leading-6 font-semibold text-dark flex items-center gap-2'>
               <MenuIcon width={24} height={24} />
-              <span>0</span>
+              <span>{price ? formatEther(price) : '0'}</span>
               <span>ETH</span>
             </div>
           </div>
@@ -181,13 +206,20 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
           {/* Claim Button */}
           <button
             onClick={handleClaim}
-            disabled={!isConnected || isPending || isConfirming || isConfirmed || isTransactionError}
+            disabled={
+              !isConnected ||
+              isConfirming ||
+              isConfirmed ||
+              (isConnected && chain?.id !== baseSepolia.id)
+            }
             className={`w-full lg:absolute lg:top-[362px] shadow-button py-4 px-6 font-medium text-md transition-colors ${
               isConfirmed
                 ? 'bg-green-600 text-gray-50 cursor-default'
-                : isTransactionError
-                ? 'bg-red-600 text-white cursor-default'
-                : !isConnected || isPending || isConfirming
+                : transactionError
+                ? 'bg-red-600 text-white cursor-pointer hover:bg-red-700'
+                : !isConnected ||
+                  isConfirming ||
+                  (isConnected && chain?.id !== baseSepolia.id)
                 ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
                 : 'bg-dark-gray text-gray-50 hover:bg-dark-gray/90 cursor-pointer'
             }`}
@@ -209,10 +241,24 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
             </div>
           )}
 
-          {/* Error Message */}
-          {error && (
-            <div className='lg:absolute lg:top-[420px] text-xs text-red-600 bg-red-50 p-2 rounded'>
-              Error: {error.message}
+          {/* Error Messages */}
+          {parsedError && (
+            <div className='lg:absolute lg:top-[420px] w-full'>
+              {parsedError && (
+                <div
+                  className={`p-3 rounded border text-sm mb-2 ${getErrorSeverityColor(
+                    parsedError.severity
+                  )}`}
+                >
+                  <div className='font-medium'>{parsedError.title}</div>
+                  <div className='mt-1'>{parsedError.message}</div>
+                  {parsedError.actionable && (
+                    <div className='mt-2 text-xs opacity-80'>
+                      {parsedError.actionable}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
