@@ -59,8 +59,6 @@ export function useNFTClaim() {
     });
   };
 
-  console.log('transactionError', transactionError);
-
   const parsedError = transactionError
     ? parseWeb3Error(transactionError)
     : null;
