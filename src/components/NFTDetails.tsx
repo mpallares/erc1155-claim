@@ -73,6 +73,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
               src={nft.metadata.image}
               alt={nft.metadata.name}
               fill
+              priority
               sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 608px'
               className='w-[608px] h-[608px] object-cover'
             />
