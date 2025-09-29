@@ -27,6 +27,7 @@ export function useNFTClaim() {
     error: transactionError,
     isPending: isConfirming,
     isSuccess: isConfirmed,
+    reset,
   } = useWriteContract();
 
   const claimNFT = ({
@@ -70,5 +71,6 @@ export function useNFTClaim() {
     parsedError,
     isConfirming,
     isConfirmed,
+    reset,
   };
 }

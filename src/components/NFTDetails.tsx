@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { NFT } from '@/types/nft';
 import Link from 'next/link';
-import React from 'react';
+import {useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useNFTClaim } from '@/hooks/useNFTClaim';
 import { useNFTStatus } from '@/hooks/useNFTStatus';
@@ -33,7 +33,13 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
     isConfirming,
     isConfirmed,
     transactionError,
+    reset,
   } = useNFTClaim();
+
+  useEffect(() => {
+    reset();
+  }, [nft.id, reset]);
+
   const getClaimButtonText = () => {
     if (!isConnected) return 'Connect Wallet';
     if (isConnected && chain?.id !== baseSepolia.id)
