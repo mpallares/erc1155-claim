@@ -5,6 +5,7 @@ import {useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useNFTClaim } from '@/hooks/useNFTClaim';
 import { useNFTStatus } from '@/hooks/useNFTStatus';
+import { useNFTBalance } from '@/hooks/useNFTBalance';
 import { getErrorSeverityColor } from '@/lib/utils/errorUtils';
 import { baseSepolia } from 'wagmi/chains';
 import { formatEther } from 'viem';
@@ -67,6 +68,13 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
   const { price, currency } = useNFTStatus(
     nft.tokenAddress as `0x${string}`,
     nft.id
+  );
+
+  const { balance, isLoading: balanceLoading } = useNFTBalance(
+    nft.tokenAddress as `0x${string}`,
+    nft.id,
+    address,
+    isConfirmed
   );
 
   return (
@@ -158,7 +166,9 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
                 {nft.metadata.name}
               </h1>
 
-              <p className='text-gray-500 text-sm'>You own 0</p>
+              <p className='text-gray-500 text-sm'>
+                {balanceLoading ? 'Loading...' : `You own ${balance}`}
+              </p>
             </div>
 
             <div className='flex gap-3'>
