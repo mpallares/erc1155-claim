@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { NFT } from '@/types/nft';
 import Link from 'next/link';
-import {useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useNFTClaim } from '@/hooks/useNFTClaim';
 import { useNFTStatus } from '@/hooks/useNFTStatus';
@@ -123,6 +123,8 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
             </p>
             <div className='flex items-center gap-4'>
               <Link
+                target='_blank'
+                rel='noopener noreferrer'
                 href='https://x.com/Kiln_finance'
                 className='flex items-center gap-2 text-dark font-medium cursor-pointer transition-colors leading-6 text-md'
               >
@@ -130,6 +132,8 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
                 <span>@Kiln</span>
               </Link>
               <Link
+                target='_blank'
+                rel='noopener noreferrer'
                 href='#'
                 className='flex items-center gap-2 text-dark font-medium cursor-pointer transition-colors leading-6 text-md'
               >
@@ -139,6 +143,8 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
             </div>
             <div className='flex gap-2'>
               <Link
+                rel='noopener noreferrer'
+                target='_blank'
                 href='https://www.kiln.fi/'
                 className='w-full bg-dark-gray text-white text-center py-3 px-6 h-9 font-medium hover:bg-gray-800 transition-colors flex items-center justify-center'
               >
