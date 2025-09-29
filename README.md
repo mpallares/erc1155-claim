@@ -14,7 +14,7 @@ A Web3 application for claiming ERC1155 NFTs built with Next.js 15, React 19, an
 ### Installation
 ```bash
 # Clone the repository
-git clone <git@github.com:mpallares/erc1155-claim.git>
+git clone git@github.com:mpallares/erc1155-claim.git
 cd erc1155-claim
 
 # Install dependencies
@@ -36,7 +36,7 @@ npm run lint         # Run ESLint
 - **Frontend Framework**: Next.js 15 (App Router)
 - **React**: React 19
 - **Web3 Integration**: wagmi v2 + viem
-- **State Management**: TanStack React Query
+- **State Management**: TanStack React Query (server state) + React local state
 - **Styling**: Tailwind CSS v4
 - **TypeScript**: Full type safety
 - **Testing**: Vitest + Testing Library
@@ -184,6 +184,7 @@ The NFT metadata and contract addresses are fetched from an external API:
 - **Browser wallets only**: No mobile wallet connect support (WalletConnect)
 - **No gas estimation**: Users don't see transaction costs upfront
 - **Image fallbacks**: No handling for broken IPFS images
+- **Local state only**: Currently using only local component state and React Query cache; as the app scales with features we'll need to consider global state management solutions like Zustand and React Context to avoid prop drilling and maintain state consistency across components.
 
 
 ## 🔮 Future Improvements
