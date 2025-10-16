@@ -11,7 +11,6 @@ import { baseSepolia } from 'wagmi/chains';
 import { formatEther } from 'viem';
 
 import {
-  KilnLogo,
   TwitterLogo,
   InstagramLogo,
   ShareIcon,
@@ -73,8 +72,7 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
   const { balance, isLoading: balanceLoading } = useNFTBalance(
     nft.tokenAddress as `0x${string}`,
     nft.id,
-    address,
-    isConfirmed
+    address
   );
 
   return (
@@ -96,9 +94,8 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
           {/* Creator Info Section */}
           <div className='border border-gray-light p-6 flex flex-col gap-6'>
             <div className='flex gap-4'>
-              <div className='w-[56px] h-[56px] relative rounded-full border-2 border-gray-light flex items-center justify-center bg-white'>
+              <div className='w-[56px] h-[56px] relative rounded-full border-2 border-gray-light flex items-center justify-center bg-blue-50'>
                 <div className='overflow-auto rounded-full'>
-                  <KilnLogo width={54} height={38} />
                 </div>
 
                 <div className='absolute bottom-[-5px] right-[-5px]'>
@@ -125,11 +122,11 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
               <Link
                 target='_blank'
                 rel='noopener noreferrer'
-                href='https://x.com/Kiln_finance'
+                href='https://x.com'
                 className='flex items-center gap-2 text-dark font-medium cursor-pointer transition-colors leading-6 text-md'
               >
                 <TwitterLogo width={16} height={16} />
-                <span>@Kiln</span>
+                <span>@NFT</span>
               </Link>
               <Link
                 target='_blank'
@@ -138,20 +135,20 @@ export function NFTDetails({ nft }: NFTDetailsProps) {
                 className='flex items-center gap-2 text-dark font-medium cursor-pointer transition-colors leading-6 text-md'
               >
                 <InstagramLogo width={16} height={16} />
-                <span>@Kiln</span>
+                <span>@NFT</span>
               </Link>
             </div>
             <div className='flex gap-2'>
               <Link
                 rel='noopener noreferrer'
                 target='_blank'
-                href='https://www.kiln.fi/'
+                href='https://mariapallares.dev/'
                 className='w-full bg-dark-gray text-white text-center py-3 px-6 h-9 font-medium hover:bg-gray-800 transition-colors flex items-center justify-center'
               >
                 Website
               </Link>
               <Link
-                href='https://www.kiln.fi/'
+                href='https://mariapallares.dev/'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='w-fit'

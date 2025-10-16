@@ -2,7 +2,6 @@
 'use client';
 
 import { useState} from "react";
-import { KilnLogo } from "@/components/icons";
 import { WalletConnect } from "@/components/WalletConnect";
 
 export function Navbar() {
@@ -11,7 +10,7 @@ export function Navbar() {
   return (
     <nav className="flex justify-between items-center w-full px-6 py-5 bg-white relative">
       <div className="flex items-center">
-        <KilnLogo />
+        NFT APP
       </div>
       <div className="relative">
         <button
