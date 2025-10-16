@@ -1,4 +1,6 @@
-import { useWriteContract } from 'wagmi';
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { ERC1155_ABI } from '@/abis/erc1155';
 import { parseWeb3Error } from '@/lib/utils/errorUtils';
 
@@ -21,14 +23,19 @@ interface ClaimParams {
 }
 
 export function useNFTClaim() {
+  const queryClient = useQueryClient();
   const {
     writeContract,
     data: hash,
     error: transactionError,
     isPending: isConfirming,
-    isSuccess: isConfirmed,
     reset,
   } = useWriteContract();
+
+  const { isLoading: isWaitingForReceipt, isSuccess: isReceiptConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
 
   const claimNFT = ({
     contractAddress,
@@ -60,17 +67,26 @@ export function useNFTClaim() {
     });
   };
 
+  // Process any transaction errors into user-friendly format
   const parsedError = transactionError
     ? parseWeb3Error(transactionError)
     : null;
+
+  useEffect(() => {
+    if (isReceiptConfirmed) {
+      queryClient.invalidateQueries({
+        queryKey: ['readContract'],
+      });
+    }
+  }, [isReceiptConfirmed, queryClient]);
 
   return {
     claimNFT,
     hash,
     transactionError,
     parsedError,
-    isConfirming,
-    isConfirmed,
+    isConfirming: isConfirming || isWaitingForReceipt,
+    isConfirmed: isReceiptConfirmed,
     reset,
   };
 }
